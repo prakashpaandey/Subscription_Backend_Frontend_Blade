@@ -23,7 +23,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Packages List (Left/Center - 2 columns) -->
+           
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                     <div class="p-6 border-b border-gray-100">
@@ -63,13 +63,13 @@
                                                         <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full permission-badge">{{ $permission->name }}</span>
                                                     @endforeach
                                                     @if($package->permissions->count() > 3)
-                                                        <!-- Hidden permissions -->
+                                                       
                                                         <div class="hidden-permissions hidden inline">
                                                             @foreach($package->permissions->skip(3) as $permission)
                                                                 <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full permission-badge">{{ $permission->name }}</span>
                                                             @endforeach
                                                         </div>
-                                                        <!-- See more button -->
+                                                       
                                                         <button 
                                                             onclick="togglePermissions({{ $package->id }})"
                                                             class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full hover:bg-gray-200 cursor-pointer toggle-btn"
@@ -103,9 +103,7 @@
                 </div>
             </div>
 
-            <!-- Create/Edit Form (Right - 1 column) -->
             <div class="lg:col-span-1">
-                <!-- Create Package Form -->
                 <div id="create-form" class="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Create New Package</h3>
                     <p class="text-gray-500 text-sm mb-6">Add a new package with specific permissions</p>
@@ -113,7 +111,7 @@
                     <form id="create-package-form" class="space-y-6">
                         @csrf
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Package Name</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2"> New Package Name</label>
                             <div class="relative">
                                 <input
                                     id="create-package-name"

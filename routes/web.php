@@ -7,5 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Package Management Page
 Route::get('/packages', [PackageController::class, 'indexView'])->name('packages.index');

@@ -9,25 +9,23 @@ use Illuminate\Support\Facades\Validator;
 
 class PackageController extends Controller
 {
-    
     public function indexView()
     {
-        $packages = Package::with('permissions')->get();
-        $permissions = Permission::all();
-        return view('packages.index', compact('packages', 'permissions'));
+        return view('packages.index', [
+            'packages' => Package::with('permissions')->get(),
+            'permissions' => Permission::all()
+        ]);
     }
 
-    
     public function index()
     {
-        $packages = Package::with('permissions')->get();
-        return response()->json($packages);
+        return response()->json(Package::with('permissions')->get());
     }
 
-    private function rules()
+    private function rules($id = null)
     {
         return [
-            'name' => 'required|string|max:255|unique:packages,name',
+            'name' => 'required|string|max:255|unique:packages,name' . ($id ? ",$id" : ''),
             'description' => 'nullable|string',
             'permissions' => 'required|array',
             'permissions.*' => 'exists:permissions,id',
@@ -36,12 +34,7 @@ class PackageController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:packages,name',
-            'description' => 'nullable|string',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id',
-        ]);
+        $validator = Validator::make($request->all(), $this->rules());
 
         if ($validator->fails()) {
             return response()->json([
@@ -51,19 +44,15 @@ class PackageController extends Controller
         }
 
         $data = $validator->validated();
-
         $package = Package::create($data);
-
-        if (!empty($data['permissions'])) {
-            $package->permissions()->attach($data['permissions']);
-        }
+        $package->permissions()->attach($data['permissions']);
 
         return response()->json([
             'message' => 'Package created successfully',
             'package' => $package->load('permissions')
         ], 201);
     }
-    
+
     public function show($id)
     {
         $package = Package::with('permissions')->find($id);
@@ -81,12 +70,7 @@ class PackageController extends Controller
             return response()->json(['message' => 'Package not found'], 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:packages,name,' . $id,
-            'description' => 'nullable|string',
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id',
-        ]);
+        $validator = Validator::make($request->all(), $this->rules($id));
 
         if ($validator->fails()) {
             return response()->json([
@@ -98,10 +82,7 @@ class PackageController extends Controller
         $data = $validator->validated();
 
         $package->update($data);
-
-        if (isset($data['permissions'])) {
-            $package->permissions()->sync($data['permissions']);
-        }
+        $package->permissions()->sync($data['permissions']);
 
         return response()->json([
             'message' => 'Package updated successfully',
