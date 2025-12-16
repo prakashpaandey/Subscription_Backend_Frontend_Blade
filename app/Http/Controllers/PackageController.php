@@ -12,7 +12,7 @@ class PackageController extends Controller
     public function indexView()
     {
         return view('packages.index', [
-            'packages' => Package::with('permissions')->get(),
+            'packages' => Package::with('permissions')->latest()->get(),
             'permissions' => Permission::all()
         ]);
     }
